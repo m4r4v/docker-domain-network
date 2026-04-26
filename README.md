@@ -2,13 +2,13 @@
 
 Este proyecto es una prueba de concepto (PoC) que demuestra cómo establecer comunicación entre microservicios dentro de una red de Docker utilizando **nombres de dominio personalizados** en lugar de direcciones IP, simulando diferentes entornos de despliegue (Desarrollo, QA y Producción).
 
-## 🚀 ¿Qué hace?
+## ¿Qué hace?
 El sistema levanta dos contenedores independientes (`dockerone` y `dockertwo`) ejecutando **FastAPI**. Cada contenedor puede:
 1.  **Recibir llamadas API** en endpoints específicos.
 2.  **Enviar mensajes** al otro contenedor utilizando un nombre de dominio que cambia según el ambiente configurado (`.des`, `.qa`, o `.com`).
 3.  **Identificar el ambiente** (Local, QA, Prod) a través de variables de entorno.
 
-## 🛠 ¿Cómo lo hace? (Arquitectura)
+## ¿Cómo lo hace? (Arquitectura)
 
 ### 1. Service Discovery via Docker DNS
 Docker incluye un servidor DNS interno. Al definir `aliases` dentro de una red (`networks`), le decimos a Docker que un contenedor debe responder a múltiples nombres de dominio.
@@ -26,10 +26,10 @@ El código Python es agnóstico al dominio. No tiene URLs "hardcodeadas". En su 
 4.  El DNS de Docker traduce `contenedortwo.des` a la IP interna de `dockertwo`.
 5.  `dockertwo` procesa el JSON y responde.
 
-## 📋 Requisitos
+## Requisitos
 *   Docker y Docker Compose instalados.
 
-## ⚙️ Configuración y Uso
+## Configuración y Uso
 
 ### 1. Definir el ambiente
 Edita el archivo `.env` en la raíz del proyecto:
@@ -54,7 +54,7 @@ Para probar la comunicación **interna**, usamos los puertos mapeados al host (8
     curl http://localhost:8082/send
     ```
 
-## 🌐 Simulación de Entornos
+## Simulación de Entornos
 
 | Ambiente | Dominio Utilizado | Resolución de Nombres |
 | :--- | :--- | :--- |
@@ -62,7 +62,7 @@ Para probar la comunicación **interna**, usamos los puertos mapeados al host (8
 | **QA** | `*.qa` | Administrado por Active Directory en entornos reales |
 | **Producción** | `*.com` | Simulado internamente, pero diseñado para Cloudflare |
 
-## ⚠️ ¿Cuál es el límite? (Restricciones)
+## ¿Cuál es el límite? (Restricciones)
 
 1.  **Resolución fuera de Docker**: El host (tu PC) **no conoce** los dominios `.des` o `.qa` automáticamente. Para que `http://contenedorone.des` funcione en tu navegador, debes mapearlos en tu archivo `/etc/hosts`.
 2.  **Aislamiento de Red**: Los dominios definidos en `aliases` solo son visibles para otros contenedores en la **misma red** de Docker.
