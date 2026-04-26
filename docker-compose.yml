@@ -1,0 +1,36 @@
+services:
+  dockerone:
+    build: ./dockerone
+    container_name: dockerone
+    environment:
+      - APP_ENV=${APP_ENV}
+      # Le pasamos a One la URL de Two según el ambiente
+      - TARGET_URL=http://${DOMAIN_TWO_LOCAL}:8080/api/v1/dockerone
+    networks:
+      demo-network:
+        aliases:
+          - ${DOMAIN_ONE_LOCAL}
+          - ${DOMAIN_ONE_QA}
+          - ${DOMAIN_ONE_PROD}
+    ports:
+      - "8081:8080"
+
+  dockertwo:
+    build: ./dockertwo
+    container_name: dockertwo
+    environment:
+      - APP_ENV=${APP_ENV}
+      # Le pasamos a Two la URL de One según el ambiente
+      - TARGET_URL=http://${DOMAIN_ONE_LOCAL}:8080/api/v1/dockertwo
+    networks:
+      demo-network:
+        aliases:
+          - ${DOMAIN_TWO_LOCAL}
+          - ${DOMAIN_TWO_QA}
+          - ${DOMAIN_TWO_PROD}
+    ports:
+      - "8082:8080"
+
+networks:
+  demo-network:
+    driver: bridge
